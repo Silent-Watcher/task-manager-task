@@ -1,5 +1,11 @@
-import type { ClientSession, DeleteResult, PaginateResult } from 'mongoose';
+import type {
+	ClientSession,
+	DeleteResult,
+	PaginateResult,
+	UpdateQuery,
+} from 'mongoose';
 import type { FilterQuery } from 'mongoose';
+import type { UpdateResult } from 'mongoose';
 import { httpStatus } from '#app/common/helpers/httpstatus';
 import { createHttpError } from '#app/common/utils/http.util';
 import type { MongoQueryOptions } from '#app/config/db/mongo/repository';
@@ -22,6 +28,12 @@ export interface ITaskService {
 		filter: FilterQuery<TaskDocument>,
 		session?: ClientSession,
 	): Promise<DeleteResult>;
+
+	updateOne(
+		filter: FilterQuery<TaskDocument>,
+		changes: UpdateQuery<TaskDocument>,
+		session?: ClientSession,
+	): Promise<UpdateResult>;
 }
 
 const createTaskService = (repo: ITasksRepository) => ({
@@ -58,6 +70,29 @@ const createTaskService = (repo: ITasksRepository) => ({
 		session?: ClientSession,
 	): Promise<DeleteResult> {
 		return repo.deleteOne(filter);
+	},
+
+	async updateOne(
+		filter: FilterQuery<TaskDocument>,
+		changes: UpdateQuery<TaskDocument>,
+		session?: ClientSession,
+	): Promise<UpdateResult> {
+		// check if the task  new title is duplicate
+		const tasksExists = await repo.isExists(
+			{
+				user: filter.user,
+				title: filter.title,
+			},
+			session,
+		);
+		if (tasksExists) {
+			throw createHttpError(httpStatus.BAD_REQUEST, {
+				code: 'BAD REQUEST',
+				message: 'Task with this title already exists',
+			});
+		}
+
+		return repo.updateOne(filter, changes, session);
 	},
 });
 

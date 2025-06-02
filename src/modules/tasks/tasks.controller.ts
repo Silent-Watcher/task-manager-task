@@ -4,6 +4,7 @@ import { normalizeSearch } from '#app/common/helpers/query/normalizeSearch';
 import { normalizeSort } from '#app/common/helpers/query/normalizeSort';
 import type { ID } from '#app/config/db/mongo/types';
 import type { CreateTasksDto } from './dtos/create-task.dto';
+import type { UpdateTasksDto } from './dtos/update-task.dto';
 import type { TasksQuerySchema } from './tasks.query';
 import type { ITaskService } from './tasks.service';
 import { taskService } from './tasks.service';
@@ -79,6 +80,39 @@ const createTaskController = (service: ITaskService) => ({
 			}
 
 			res.sendSuccess(httpStatus.OK, {}, 'deleted successfully');
+			return;
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	async updateOne(
+		req: Request,
+		res: Response,
+		next: NextFunction,
+	): Promise<void> {
+		try {
+			const taskId = req.params?.id;
+
+			const updateNoteDto = req.body as UpdateTasksDto;
+
+			const { modifiedCount } = await service.updateOne(
+				{
+					_id: taskId,
+					user: req.user?._id,
+				},
+				updateNoteDto,
+			);
+
+			if (!modifiedCount) {
+				res.sendError(httpStatus.BAD_REQUEST, {
+					code: 'BAD REQUEST',
+					message: 'task with this id not found',
+				});
+				return;
+			}
+
+			res.sendSuccess(httpStatus.OK, {}, 'updated successfully');
 			return;
 		} catch (error) {
 			next(error);
