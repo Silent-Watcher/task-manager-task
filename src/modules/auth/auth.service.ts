@@ -1,4 +1,4 @@
-import { hash } from 'bcrypt';
+import { compare, hash } from 'bcrypt';
 import dayjs from 'dayjs';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
@@ -9,6 +9,7 @@ import { CONFIG } from '#app/config';
 import type { CreateUserDto } from '../users/dtos/create-user.dto';
 import type { UserDocument } from '../users/user.model';
 import { userService } from '../users/user.service';
+import type { LoginUserDto } from './dtos/login-user.dto';
 import type { IRefreshTokenRepository } from './repos/refresh-token.repository';
 import { refreshTokenRepository } from './repos/refresh-token.repository';
 
@@ -17,6 +18,12 @@ export interface IAuthService {
 		newUser: UserDocument;
 		refreshToken: string;
 		accessToken: string;
+	}>;
+
+	loginV1(loginUserDto: LoginUserDto): Promise<{
+		user: UserDocument;
+		accessToken: string;
+		refreshToken: string;
 	}>;
 }
 
@@ -88,6 +95,52 @@ const createAuthService = (refreshTokenRepo: IRefreshTokenRepository) => ({
 		} finally {
 			await session.endSession();
 		}
+	},
+	//
+	async loginV1(loginUserDto: LoginUserDto): Promise<{
+		user: UserDocument;
+		accessToken: string;
+		refreshToken: string;
+	}> {
+		const { email, password } = loginUserDto;
+		const foundedUser = await userService.findOneByEmail(email);
+		if (!foundedUser) {
+			throw createHttpError(httpStatus.BAD_REQUEST, {
+				code: 'BAD REQUEST',
+				message: 'invalid credentials',
+			});
+		}
+
+		const isPasswordValid = await compare(password, foundedUser.password);
+		if (!isPasswordValid) {
+			throw createHttpError(httpStatus.BAD_REQUEST, {
+				code: 'BAD REQUEST',
+				message: 'invalid credentials',
+			});
+		}
+		const newAccessToken = jwt.sign(
+			{ userId: foundedUser._id },
+			CONFIG.SECRET.ACCESS_TOKEN,
+			{ expiresIn: '5m' },
+		);
+
+		const newRefreshToken = jwt.sign(
+			{ userId: foundedUser._id },
+			CONFIG.SECRET.REFRESH_TOKEN,
+			{ expiresIn: '1d' },
+		);
+
+		await refreshTokenRepo.create({
+			user: foundedUser._id,
+			hash: newRefreshToken,
+			rootIssuedAt: dayjs().toDate(),
+		});
+
+		return {
+			user: foundedUser,
+			refreshToken: newRefreshToken,
+			accessToken: newAccessToken,
+		};
 	},
 });
 

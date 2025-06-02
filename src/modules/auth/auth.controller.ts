@@ -4,6 +4,7 @@ import { CONFIG } from '#app/config';
 import type { CreateUserDto } from '../users/dtos/create-user.dto';
 import type { IAuthService } from './auth.service';
 import { authService } from './auth.service';
+import type { LoginUserDto } from './dtos/login-user.dto';
 
 const createAuthController = (service: IAuthService) => ({
 	//
@@ -35,6 +36,41 @@ const createAuthController = (service: IAuthService) => ({
 				},
 				'registeration process completed',
 			);
+		} catch (error) {
+			next(error);
+		}
+	},
+	//
+	async loginV1(
+		req: Request,
+		res: Response,
+		next: NextFunction,
+	): Promise<void> {
+		try {
+			const loginUserDto = req.body as LoginUserDto;
+			const { user, accessToken, refreshToken } =
+				await service.loginV1(loginUserDto);
+			const userObject = user.toObject();
+
+			res.cookie('refresh_token', refreshToken, {
+				httpOnly: true,
+				sameSite: 'strict',
+				secure: !CONFIG.DEBUG,
+				maxAge: 23 * 60 * 60 * 1000, // slightly lower to prevent race condition
+				path: '/api/auth/refresh',
+			});
+
+			req.user = user;
+
+			res.sendSuccess(
+				httpStatus.CREATED,
+				{
+					accessToken,
+					user: { _id: req.user?._id, email: req.user?.email },
+				},
+				'Login successful.',
+			);
+			return;
 		} catch (error) {
 			next(error);
 		}
