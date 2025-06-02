@@ -46,7 +46,7 @@ const createAuthController = (service: IAuthService) => ({
 					accessToken,
 					user: { _id: req.user._id, email: req.user.email },
 				},
-				'registeration process completed: email verified',
+				'registeration process completed',
 			);
 		} catch (error) {
 			next(error);
