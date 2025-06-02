@@ -21,4 +21,6 @@ authRouterV1.post(
 	authController.loginV1,
 );
 
+authRouterV1.post('/refresh', authController.refreshTokensV1);
+
 export { authRouterV1 };

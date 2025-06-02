@@ -25,6 +25,11 @@ export interface IAuthService {
 		accessToken: string;
 		refreshToken: string;
 	}>;
+
+	refreshTokensV1(refreshToken: string): Promise<{
+		accessToken: string;
+		refreshToken: string;
+	}>;
 }
 
 const createAuthService = (refreshTokenRepo: IRefreshTokenRepository) => ({
@@ -36,6 +41,7 @@ const createAuthService = (refreshTokenRepo: IRefreshTokenRepository) => ({
 	}> {
 		const { email, password } = createUserDto;
 		const emailTaken = await userService.findOneByEmail(email);
+
 		if (emailTaken) {
 			throw createHttpError(httpStatus.BAD_REQUEST, {
 				code: 'BAD REQUEST',
@@ -141,6 +147,102 @@ const createAuthService = (refreshTokenRepo: IRefreshTokenRepository) => ({
 			refreshToken: newRefreshToken,
 			accessToken: newAccessToken,
 		};
+	},
+	//
+	async refreshTokensV1(refreshToken: string) {
+		const now = dayjs();
+
+		const decoded = jwt.verify(
+			refreshToken,
+			CONFIG.SECRET.REFRESH_TOKEN,
+		) as jwt.JwtPayload;
+
+		const userId = decoded.userId;
+
+		const doc = await refreshTokenRepo.findOne(refreshToken, userId);
+
+		if (!doc) {
+			throw createHttpError(httpStatus.UNAUTHORIZED, {
+				code: 'UNAUTHORIZED',
+				message: 'invalid token',
+			});
+		}
+
+		// Reuse detection
+		if (doc.status === 'invalid') {
+			await doc.updateOne({ revokedAt: now.toDate() });
+			throw createHttpError(httpStatus.UNAUTHORIZED, {
+				code: 'UNAUTHORIZED',
+				message: 'Reuse detected, please log in',
+			});
+		}
+
+		// Sliding expiration check
+		if (now.isAfter(doc.expiresAt)) {
+			await doc.updateOne({ status: 'invalid' });
+			throw createHttpError(httpStatus.UNAUTHORIZED, {
+				code: 'UNAUTHORIZED',
+				message: 'Refresh token expired, please log in',
+			});
+		}
+
+		// Absolute expiration check
+		if (
+			now.diff(dayjs(doc.rootIssuedAt), 'day') >= CONFIG.MAX_SESSION_DAYS
+		) {
+			await doc.updateOne({ status: 'invalid' });
+			throw createHttpError(httpStatus.UNAUTHORIZED, {
+				code: 'UNAUTHORIZED',
+				message: 'Session expired, please log in',
+			});
+		}
+
+		const session = await mongoose.startSession();
+		try {
+			session.startTransaction();
+
+			// Rotate: invalidate old and issue new
+			await doc.updateOne({ status: 'invalid' }, { session });
+
+			const newAccessToken = jwt.sign(
+				{ userId },
+				CONFIG.SECRET.ACCESS_TOKEN,
+				{ expiresIn: '5m' },
+			);
+
+			const newRefreshToken = jwt.sign(
+				{ userId },
+				CONFIG.SECRET.REFRESH_TOKEN,
+				{ expiresIn: '1d' },
+			);
+
+			await refreshTokenRepo.create(
+				{
+					user: userId,
+					hash: newRefreshToken,
+					rootIssuedAt: doc.rootIssuedAt,
+				},
+				session,
+			);
+
+			await session.commitTransaction();
+
+			return {
+				refreshToken: newRefreshToken,
+				accessToken: newAccessToken,
+			};
+		} catch (error) {
+			await session.abortTransaction();
+			logger.error(
+				`Transaction aborted due to: ${(error as Error)?.message}`,
+			);
+			throw createHttpError(httpStatus.INTERNAL_SERVER_ERROR, {
+				code: 'INTERNAL SERVER ERROR',
+				message: 'Transaction failed',
+			});
+		} finally {
+			await session.endSession();
+		}
 	},
 });
 

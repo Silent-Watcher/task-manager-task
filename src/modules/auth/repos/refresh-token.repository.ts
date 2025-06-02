@@ -1,3 +1,6 @@
+import type { ClientSession, Types } from 'mongoose';
+import { type CommandResult, unwrap } from '#app/config/db/global';
+import { mongo } from '#app/config/db/mongo/mongo.condig';
 import { createBaseRepository } from '#app/config/db/mongo/repository';
 import {
 	type RefreshToken,
@@ -11,24 +14,39 @@ import {
 export interface IRefreshTokenRepository
 	extends ReturnType<
 		typeof createBaseRepository<RefreshToken, RefreshTokenDocument>
-	> {}
+	> {
+	findOne(
+		refreshToken: string,
+		userId: Types.ObjectId,
+		session?: ClientSession,
+	): Promise<RefreshTokenDocument | null>;
+}
 
 const base = createBaseRepository<RefreshToken, RefreshTokenDocument>(
 	refreshTokenModel,
 );
 
-/**
- * Factory function to create an instance of the refresh token repository.
- *
- * Provides methods for creating and finding refresh token documents.
- *
- * @returns {{
- *   create(newRefreshToken: RefreshToken): Promise<RefreshTokenDocument>;
- *   findOne(refreshToken: string, userId: Types.ObjectId): Promise<RefreshTokenDocument>;
- * }}
- */
 const createRefreshTokenRepository = () => ({
 	...base,
+
+	async findOne(
+		refreshToken: string,
+		userId: Types.ObjectId,
+		session?: ClientSession,
+	): Promise<RefreshTokenDocument | null> {
+		return unwrap(
+			(await mongo.fire(() =>
+				refreshTokenModel.findOne(
+					{
+						user: userId,
+						hash: refreshToken,
+					},
+					null,
+					{ session },
+				),
+			)) as CommandResult<RefreshTokenDocument | null>,
+		);
+	},
 });
 
 /**
