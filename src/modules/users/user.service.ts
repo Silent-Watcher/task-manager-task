@@ -4,7 +4,7 @@ import {
 	userRepository,
 } from '#app/modules/users/user.repository';
 
-import type { Types, UpdateResult } from 'mongoose';
+import type { ClientSession, Types, UpdateResult } from 'mongoose';
 import type { UserDocument } from './user.model';
 
 /**
@@ -39,8 +39,9 @@ const createUserService = (repo: IUserRepository) => ({
 	},
 	async create(
 		createUserDto: Pick<CreateUserDto, 'email' | 'password'>,
+		session?: ClientSession,
 	): Promise<UserDocument> {
-		return repo.create(createUserDto);
+		return repo.create(createUserDto, session);
 	},
 	updatePassword(
 		id: Types.ObjectId,

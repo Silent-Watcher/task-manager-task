@@ -11,7 +11,6 @@ const createAppController = (service: IAppService) => ({
 		next: NextFunction,
 	): Promise<void> {
 		try {
-			console.log('inside health check');
 			const mongoStatus = MONGO_STATE_MAP[mongoState];
 
 			res.sendSuccess(httpStatus.OK, {}, 'Health report', {
