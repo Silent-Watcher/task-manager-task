@@ -1,4 +1,5 @@
-import type { ClientSession, PaginateResult } from 'mongoose';
+import type { ClientSession, DeleteResult, PaginateResult } from 'mongoose';
+import type { FilterQuery } from 'mongoose';
 import { httpStatus } from '#app/common/helpers/httpstatus';
 import { createHttpError } from '#app/common/utils/http.util';
 import type { MongoQueryOptions } from '#app/config/db/mongo/repository';
@@ -16,6 +17,11 @@ export interface ITaskService {
 		data: CreateTasksDto & { user: ID },
 		session?: ClientSession,
 	): Promise<TaskDocument>;
+
+	deleteOne(
+		filter: FilterQuery<TaskDocument>,
+		session?: ClientSession,
+	): Promise<DeleteResult>;
 }
 
 const createTaskService = (repo: ITasksRepository) => ({
@@ -45,6 +51,13 @@ const createTaskService = (repo: ITasksRepository) => ({
 		}
 
 		return repo.create(data);
+	},
+
+	deleteOne(
+		filter: FilterQuery<TaskDocument>,
+		session?: ClientSession,
+	): Promise<DeleteResult> {
+		return repo.deleteOne(filter);
 	},
 });
 

@@ -57,6 +57,33 @@ const createTaskController = (service: ITaskService) => ({
 			next(error);
 		}
 	},
+
+	async deleteOne(
+		req: Request,
+		res: Response,
+		next: NextFunction,
+	): Promise<void> {
+		try {
+			const taskId = req.params?.id;
+			const { deletedCount } = await service.deleteOne({
+				_id: taskId,
+				user: req.user?._id,
+			});
+
+			if (!deletedCount) {
+				res.sendError(httpStatus.BAD_REQUEST, {
+					code: 'BAD REQUEST',
+					message: 'delete process failed',
+				});
+				return;
+			}
+
+			res.sendSuccess(httpStatus.OK, {}, 'deleted successfully');
+			return;
+		} catch (error) {
+			next(error);
+		}
+	},
 });
 
 export const taskController = createTaskController(taskService);
