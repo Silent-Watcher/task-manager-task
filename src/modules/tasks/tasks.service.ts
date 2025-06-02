@@ -1,11 +1,20 @@
-import type { ID } from '#app/config/db/mongo/types';
+import type { PaginateResult } from 'mongoose';
+import type { MongoQueryOptions } from '#app/config/db/mongo/repository';
+import type { Task, TaskDocument } from './tasks.model';
+import { type ITasksRepository, tasksRepository } from './tasks.repository';
 
 export interface ITaskService {
-	getAll(user: ID): Promise<[]>;
+	getAll(
+		queryOptions: MongoQueryOptions<Task, TaskDocument>,
+	): Promise<PaginateResult<TaskDocument> | TaskDocument[] | []>;
 }
 
-const createTaskService = () => ({
-	async getAll(user: ID): Promise<[]> {},
+const createTaskService = (repo: ITasksRepository) => ({
+	getAll(
+		queryOptions: MongoQueryOptions<Task, TaskDocument>,
+	): Promise<PaginateResult<TaskDocument> | TaskDocument[] | []> {
+		return repo.getAll(queryOptions);
+	},
 });
 
-export const taskService = createTaskService();
+export const taskService = createTaskService(tasksRepository);

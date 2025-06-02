@@ -1,10 +1,30 @@
 import type { NextFunction, Request, Response } from 'express';
-import { type ITaskService, taskService } from './tasks.service';
+import { httpStatus } from '#app/common/helpers/httpstatus';
+import { normalizeSearch } from '#app/common/helpers/query/normalizeSearch';
+import { normalizeSort } from '#app/common/helpers/query/normalizeSort';
+import type { TasksQuerySchema } from './tasks.query';
+import type { ITaskService } from './tasks.service';
+import { taskService } from './tasks.service';
 
 const createTaskController = (service: ITaskService) => ({
-	getAll(req: Request, res: Response, next: NextFunction) {
+	async getAll(req: Request, res: Response, next: NextFunction) {
 		try {
-			console.log('inside tasks getall controller');
+			const { page, pageSize, sort, search } =
+				req.query as TasksQuerySchema;
+
+			const tasks = await service.getAll({
+				filter: {
+					user: req.user?._id,
+				},
+				...(search
+					? { search: normalizeSearch(search as string) }
+					: {}),
+				...(page && pageSize ? { pagination: { page, pageSize } } : {}),
+				...(sort ? { sort: { ...normalizeSort(sort) } } : {}),
+			});
+
+			res.sendSuccess(httpStatus.OK, { tasks });
+			return;
 		} catch (error) {
 			next(error);
 		}

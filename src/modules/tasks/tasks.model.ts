@@ -45,4 +45,4 @@ taskSchema.plugin(mongoosePagiante);
 
 export type Task = InferSchemaType<typeof taskSchema>;
 export type TaskDocument = HydratedDocument<Task>;
-export const TaskModel = model('task', taskSchema) as PaginateModel<Task>;
+export const taskModel = model('task', taskSchema) as PaginateModel<Task>;
