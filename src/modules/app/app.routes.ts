@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { verifyUser } from '#app/common/middlewares/verifyUser';
 import { authRouterV1 } from '../auth/auth.routes';
+import { tasksRouterV1 } from '../tasks/tasks.routes';
 import { appController } from './app.controller';
 
 const appRouterV1 = Router();
@@ -20,5 +21,7 @@ appRouterV1.get('/protected', verifyUser, (req, res) => {
 		message: 'You have access to this protected route.',
 	});
 });
+
+appRouterV1.use('/tasks', verifyUser, tasksRouterV1);
 
 export { appRouterV1 };
