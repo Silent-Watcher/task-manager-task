@@ -1,0 +1,9 @@
+node_modules
+dist
+coverage
+.env
+.env.prod
+.env.dev
+mongo-keyfile
+users.acl
+redis.conf
