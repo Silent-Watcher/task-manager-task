@@ -1,6 +1,7 @@
 import { createServer } from 'node:http';
 import { logger } from '#app/common/utils/logger.util';
 import { CONFIG } from '#app/config';
+import { rawMongo } from '#app/config/db/mongo/mongo.condig';
 import { app } from './app';
 
 /**
@@ -17,8 +18,10 @@ import { app } from './app';
  * @returns {void}
  */
 export function runServer(port: string = String(CONFIG.APP.PORT)): void {
-	const server = createServer(app);
-	server.listen(port, () => {
-		logger.info(`server is up and running on port ${port}`);
+	rawMongo().then(() => {
+		const server = createServer(app);
+		server.listen(port, () => {
+			logger.info(`server is up and running on port ${port}`);
+		});
 	});
 }

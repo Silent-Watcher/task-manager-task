@@ -8,7 +8,7 @@ services:
               memory: '513M'
     build:
       context: ..
-      dockerfile: .docker/Dockerfile.dev
+      dockerfile: .docker/Dockerfile
     ports:
       - "4000:4000"
     restart: always

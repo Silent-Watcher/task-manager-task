@@ -1,7 +1,7 @@
 {
 	"name": "task-manager-task",
 	"type": "module",
-	"version": "0.0.0",
+	"version": "1.0.0",
 	"imports": {
 		"#app/*": {
 			"my-package-dev": "src/*",
@@ -12,12 +12,10 @@
 	"scripts": {
 		"tsc": "tsc",
 		"dev": "tsx --watch --env-file=.env.dev ./src/*.ts",
-		"dev:worker:email": "tsx --watch --env-file=.env.dev ./src/workers/emailWorker.ts",
 		"prebuild": "npm run tsc",
 		"build": "tsup",
 		"prestart": "npm run build",
 		"start": "node --env-file=.env.prod dist/main.js",
-		"start:worker:email": "node --env-file=.env.prod ./dist/workers/emailWorker.js",
 		"test": "vitest run --coverage --passWithNoTests",
 		"test:watch": "vitest dev",
 		"format": "biome format --write ./src/*.ts ./tests/**/*.ts",

@@ -2,6 +2,7 @@ import { compare, hash } from 'bcrypt';
 import dayjs from 'dayjs';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
+import { hashPassword, verifyPassword } from '#app/common/helpers/hash';
 import { httpStatus } from '#app/common/helpers/httpstatus';
 import { createHttpError } from '#app/common/utils/http.util';
 import { logger } from '#app/common/utils/logger.util';
@@ -48,7 +49,9 @@ const createAuthService = (refreshTokenRepo: IRefreshTokenRepository) => ({
 				message: 'email is already in use',
 			});
 		}
-		const hashedPassword = await hash(password, 10);
+		console.log('inside service');
+		const hashedPassword = hashPassword(password);
+		console.log('after hash!');
 
 		const session = await mongoose.startSession();
 		try {
@@ -57,7 +60,7 @@ const createAuthService = (refreshTokenRepo: IRefreshTokenRepository) => ({
 			const newUser = await userService.create(
 				{
 					email,
-					password: hashedPassword,
+					password: password,
 				},
 				session,
 			);
@@ -90,6 +93,7 @@ const createAuthService = (refreshTokenRepo: IRefreshTokenRepository) => ({
 				refreshToken,
 			};
 		} catch (error) {
+			console.log('error: ', error);
 			await session.abortTransaction();
 			logger.error(
 				`Transaction aborted due to: ${(error as Error)?.message}`,
@@ -117,7 +121,7 @@ const createAuthService = (refreshTokenRepo: IRefreshTokenRepository) => ({
 			});
 		}
 
-		const isPasswordValid = await compare(password, foundedUser.password);
+		const isPasswordValid = verifyPassword(password, foundedUser.password);
 		if (!isPasswordValid) {
 			throw createHttpError(httpStatus.BAD_REQUEST, {
 				code: 'BAD REQUEST',

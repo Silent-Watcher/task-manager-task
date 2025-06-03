@@ -14,6 +14,7 @@ const createAuthController = (service: IAuthService) => ({
 		next: NextFunction,
 	): Promise<void> {
 		try {
+			console.log('inside auth controller');
 			const createUserDto = req.body as CreateUserDto;
 			const { newUser, refreshToken, accessToken } =
 				await service.registerV1(createUserDto);
@@ -27,7 +28,7 @@ const createAuthController = (service: IAuthService) => ({
 			});
 
 			req.user = newUser;
-
+			console.log('after register ...');
 			res.sendSuccess(
 				httpStatus.CREATED,
 				{
@@ -37,6 +38,7 @@ const createAuthController = (service: IAuthService) => ({
 				'registeration process completed',
 			);
 		} catch (error) {
+			console.log(error);
 			next(error);
 		}
 	},
