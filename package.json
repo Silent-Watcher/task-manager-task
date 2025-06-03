@@ -20,6 +20,7 @@
 		"start:worker:email": "node --env-file=.env.prod ./dist/workers/emailWorker.js",
 		"test": "vitest run --coverage --passWithNoTests",
 		"test:watch": "vitest dev",
+		"format": "biome format --write ./src/*.ts ./tests/**/*.ts",
 		"prelint": "biome format --write ./src/*.ts ./tests/*.ts",
 		"lint": "biome lint ./src/**/*.ts ./tests/**/*.ts",
 		"check": "biome check --write ./src/*.ts ./tests/*.ts",

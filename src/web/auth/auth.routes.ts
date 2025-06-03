@@ -7,6 +7,14 @@ import {
 
 const webAuthRouter = Router();
 
+webAuthRouter.use((req, res, next) => {
+	if (req.user) {
+		res.redirect('/');
+		return;
+	}
+	next();
+});
+
 webAuthRouter.get(
 	'/login',
 	(req: Request, res: Response, next: NextFunction) => {

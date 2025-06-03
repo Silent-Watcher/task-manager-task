@@ -4,13 +4,14 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>register</title>
+	<link rel="stylesheet" href="/styles/global.css">
 	<link rel="stylesheet" href="/styles/auth.css">
 </head>
 <body>
 	<h1>register</h1>
+	<h4><a href="/">Home</a></h4>
 
-
-	<form action="/api/auth/signup" method="post">
+	<form id="signupForm" action="/api/auth/signup" method="post">
 		<div class="form-section">
 			<label for="emailInput">Email</label>
 			<input type="email" name="email" id="emailInput" placeholder="e.g JohnDoe@gmail.com">
@@ -26,9 +27,11 @@
 			<input type="password" name="confirmPassword" id="ConfirmPassInput" placeholder="***">
 		</div>
 
-		<input type="submit" value="login">
+		<input type="submit" value="register">
 		<p><span>already have an account? </span><a href="/auth/login">login here</a></p>
 
 	</form>
+
+	<script src="/js/signup.js"></script>
 </body>
 </html>

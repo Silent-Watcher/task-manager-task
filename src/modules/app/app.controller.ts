@@ -29,10 +29,15 @@ const createAppController = (service: IAppService) => ({
 	//
 	renderIndexPage(req: Request, res: Response, next: NextFunction) {
 		try {
-			if (!req.user) {
-				res.redirect('/auth/login');
-			}
-			res.render('index', { user: { email: req.user?.email } });
+			res.render('index');
+		} catch (error) {
+			next(error);
+		}
+	},
+	//
+	renderCreateTaskPage(req: Request, res: Response, next: NextFunction) {
+		try {
+			res.render('tasks/createTask');
 		} catch (error) {
 			next(error);
 		}

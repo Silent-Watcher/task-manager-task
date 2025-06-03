@@ -4,11 +4,34 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>task-manager</title>
+	<link rel="stylesheet" href="/styles/global.css">
+	<link rel="stylesheet" href="/styles/index.css">
 </head>
 <body>
 
-	<h2>Task manager</h2>
-	<h3>welcome user : </h3>
+	<header>
+		<h2>Task manager</h2>
+		<h3>welcome user : <span class="user-email"></span></h3>
+		<div class="auth-links">
 
+		</div>
+	</header>
+
+	<main>
+		<table>
+			<thead>
+				<th>id</th>
+				<th>title</th>
+				<th>description</th>
+				<th>status</th>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</main>
+
+	<p class="addTaskCto"><a href="/tasks/new">create Task?</a></p>
+
+	<script src="/js/index.js"></script>
 </body>
 </html>
