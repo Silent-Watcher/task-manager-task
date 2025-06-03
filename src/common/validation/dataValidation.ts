@@ -40,7 +40,8 @@ function validate<T, U>(schema: ZodSchema<T>, data: U, res: Response): boolean {
 export function validateBody<T>(schema: ZodSchema<T>) {
 	return (req: Request, res: Response, next: NextFunction) => {
 		const result = validate(schema, req.body, res);
-		result ? next() : undefined;
+		if (!result) return;
+		next();
 	};
 }
 
@@ -57,7 +58,8 @@ export function validateBody<T>(schema: ZodSchema<T>) {
 export function validateParam<T>(schema: ZodSchema<T>) {
 	return (req: Request, res: Response, next: NextFunction) => {
 		const result = validate(schema, req.params, res);
-		result ? next() : undefined;
+		if (!result) return;
+		next();
 	};
 }
 
@@ -74,7 +76,8 @@ export function validateParam<T>(schema: ZodSchema<T>) {
 export function validateQuery<T>(schema: ZodSchema<T>) {
 	return (req: Request, res: Response, next: NextFunction) => {
 		const result = validate(schema, req.query, res);
-		result ? next() : undefined;
+		if (!result) return;
+		next();
 	};
 }
 

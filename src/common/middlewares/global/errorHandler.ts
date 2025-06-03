@@ -19,7 +19,7 @@ const { DEBUG } = CONFIG;
  * @param {Response} res - The Express response object, extended with `sendError`.
  * @param {NextFunction} next - The next middleware function in the stack.
  */
-function handleExceptions(
+export function handleExceptions(
 	err: unknown,
 	_req: Request,
 	res: Response,
@@ -52,7 +52,7 @@ function handleExceptions(
  * @param {Response} res - The Express response object, extended with `sendError`.
  * @param {NextFunction} _next - The next middleware function (unused in this handler).
  */
-function handleNotFoundError(
+export function handleNotFoundError(
 	req: Request,
 	res: Response,
 	_next: NextFunction,
