@@ -1,4 +1,4 @@
-import type { ClientSession, Types } from 'mongoose';
+import type { ClientSession, PaginateModel, Types } from 'mongoose';
 import { type CommandResult, unwrap } from '#app/config/db/global';
 import { mongo } from '#app/config/db/mongo/mongo.condig';
 import { createBaseRepository } from '#app/config/db/mongo/repository';
