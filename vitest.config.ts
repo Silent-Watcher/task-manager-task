@@ -15,6 +15,7 @@ export default defineConfig({
 				'src/**/*.dto.ts',
 				'src/**/*.model.ts',
 				'src/**/*.schema.ts',
+				'src/common/types/*',
 			],
 		},
 		environment: 'node',
