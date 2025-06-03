@@ -11,6 +11,11 @@ export default defineConfig({
 			reporter: ['html', 'json', 'text'],
 			all: true,
 			include: ['src/**/*.ts'],
+			exclude: [
+				'src/**/*.dto.ts',
+				'src/**/*.model.ts',
+				'src/**/*.schema.ts',
+			],
 		},
 		environment: 'node',
 		setupFiles: ['vitest.setup.ts'],

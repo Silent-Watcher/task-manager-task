@@ -3,6 +3,7 @@ import type {
 	DeleteResult,
 	FilterQuery,
 	HydratedDocument,
+	Model,
 	// Model,
 	PaginateModel,
 	PaginateOptions,
