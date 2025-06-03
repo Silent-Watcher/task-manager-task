@@ -14,7 +14,7 @@ import { httpStatus } from './httpstatus';
  *
  * @returns {Types.ObjectId} The corresponding `ObjectId` instance.
  */
-export function covertToObjectId(stringObjectId: string): Types.ObjectId {
+export function convertToObjectId(stringObjectId: string): Types.ObjectId {
 	if (!isValidObjectId(stringObjectId)) {
 		throw createHttpError(httpStatus.BAD_REQUEST, {
 			message: 'invalid objectID value',

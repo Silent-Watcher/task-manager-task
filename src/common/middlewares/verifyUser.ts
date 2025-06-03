@@ -2,7 +2,7 @@ import type { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { httpStatus } from '#app/common/helpers/httpstatus';
 
-import { covertToObjectId } from '#app/common/helpers/mongo';
+import { convertToObjectId } from '#app/common/helpers/mongo';
 import { CONFIG } from '#app/config';
 import type { UserDocument } from '#app/modules/users/user.model';
 import { userService } from '#app/modules/users/user.service';
@@ -63,7 +63,7 @@ export function verifyUser(
 			}
 
 			const user = await userService.findById(
-				covertToObjectId((decoded as DecodedToken).userId),
+				convertToObjectId((decoded as DecodedToken).userId),
 			);
 
 			if (!user) {
