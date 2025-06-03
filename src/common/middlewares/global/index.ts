@@ -22,11 +22,11 @@ import { CONFIG } from '#app/config';
  * @returns {void}
  */
 export function configureMiddleware(app: Application) {
+	app.use(responseMiddleware);
+
 	// built-ins
 	app.use(express.json({ limit: '100kb' })); // Limit Request Payloads to avoid DoS attacks via large payloads
 	app.use(express.urlencoded({ extended: false }));
-
-	app.use(responseMiddleware);
 
 	// view engine / static
 	app.set('view engine', 'ejs');

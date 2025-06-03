@@ -3,6 +3,7 @@ dist
 coverage
 .env
 .env.prod
+.env.test
 .env.dev
 mongo-keyfile
 users.acl

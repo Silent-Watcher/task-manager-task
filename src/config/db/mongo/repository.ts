@@ -3,6 +3,7 @@ import type {
 	DeleteResult,
 	FilterQuery,
 	HydratedDocument,
+	Model,
 	// Model,
 	PaginateModel,
 	PaginateOptions,
@@ -10,11 +11,13 @@ import type {
 	PopulateOptions,
 	ProjectionType,
 	SortOrder,
+	Types,
 	UpdateQuery,
 	UpdateResult,
 } from 'mongoose';
 import { type CommandResult, unwrap } from '../global';
 import { mongo } from './mongo.condig';
+import type { ExistsResult } from './types';
 
 interface PaginationOptions {
 	page?: number;
@@ -147,6 +150,17 @@ export const createBaseRepository = <T, Doc extends HydratedDocument<T>>(
 			(await mongo.fire(() =>
 				model.deleteOne(filter, { session }).lean(),
 			)) as CommandResult<Promise<DeleteResult>>,
+		);
+	},
+
+	async isExists(
+		filter: FilterQuery<Doc>,
+		session?: ClientSession,
+	): ExistsResult {
+		return unwrap(
+			(await mongo.fire(() =>
+				model.exists(filter).session(session as ClientSession),
+			)) as CommandResult<Promise<null | { _id: Types.ObjectId }>>,
 		);
 	},
 });
