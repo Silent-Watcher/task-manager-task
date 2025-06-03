@@ -26,6 +26,17 @@ const createAppController = (service: IAppService) => ({
 			next(error);
 		}
 	},
+	//
+	renderIndexPage(req: Request, res: Response, next: NextFunction) {
+		try {
+			if (!req.user) {
+				res.redirect('/auth/login');
+			}
+			res.render('index', { user: { email: req.user?.email } });
+		} catch (error) {
+			next(error);
+		}
+	},
 });
 
 export const appController = createAppController(appService);
