@@ -19,6 +19,7 @@ const createTaskController = (service: ITaskService) => ({
 				filter: {
 					user: req.user?._id,
 				},
+				populate: [{ path: 'user', select: 'email' }],
 				...(search
 					? { search: normalizeSearch(search as string) }
 					: {}),
@@ -52,7 +53,7 @@ const createTaskController = (service: ITaskService) => ({
 				return;
 			}
 
-			res.sendSuccess(httpStatus.CREATED, { note: newTask });
+			res.sendSuccess(httpStatus.CREATED, { task: newTask });
 			return;
 		} catch (error) {
 			next(error);

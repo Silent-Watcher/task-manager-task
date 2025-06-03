@@ -26,6 +26,22 @@ const createAppController = (service: IAppService) => ({
 			next(error);
 		}
 	},
+	//
+	renderIndexPage(req: Request, res: Response, next: NextFunction) {
+		try {
+			res.render('index');
+		} catch (error) {
+			next(error);
+		}
+	},
+	//
+	renderCreateTaskPage(req: Request, res: Response, next: NextFunction) {
+		try {
+			res.render('tasks/createTask');
+		} catch (error) {
+			next(error);
+		}
+	},
 });
 
 export const appController = createAppController(appService);

@@ -3,45 +3,35 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>AI-Note-App-API</title>
+	<title>task-manager</title>
+	<link rel="stylesheet" href="/styles/global.css">
 	<link rel="stylesheet" href="/styles/index.css">
 </head>
 <body>
-	<header>
-		<h1>Welcome to AI-Note-App-API</h1>
-		<h3>version : V<%= apiVersion %></h3>
 
-		<p>A powerful and lightweight RESTful API for a smart note-taking application that leverages AI to help users capture, organize, and search their notes more effectively.</p>
+	<header>
+		<h2>Task manager</h2>
+		<h3>welcome user : <span class="user-email"></span></h3>
+		<div class="auth-links">
+
+		</div>
 	</header>
+
 	<main>
-		<section id="swagger-docs" class="box">
-		    <img
-        src="/imgs/swagger_logo.svg"
-        alt="Swagger Logo"
-        class="logo"
-      />
-      <br />
-      <button
-        class="button swagger-button"
-        onclick="window.location.href='/api/docs'"
-      >
-        Go to Swagger Docs
-      </button>
-		</section>
-		<section id="graphql-docs" class="box">
-			<img
-			src="/imgs/GraphQL_Logo.svg"
-			alt="GraphQL Logo"
-			class="logo"
-		  />
-		  <br />
-		  <button
-			class="button graphql-button"
-			onclick="window.location.href='/graphql'"
-		  >
-			Go to GraphQL UI
-		  </button>
-		</section>
+		<table>
+			<thead>
+				<th>id</th>
+				<th>title</th>
+				<th>description</th>
+				<th>status</th>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
 	</main>
+
+	<p class="addTaskCto"><a href="/tasks/new">create Task?</a></p>
+
+	<script src="/js/index.js"></script>
 </body>
 </html>
