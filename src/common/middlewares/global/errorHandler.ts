@@ -26,6 +26,7 @@ export function handleExceptions(
 	next: NextFunction,
 ): void {
 	if (err) {
+		console.log(err);
 		if (err instanceof HttpError) {
 			res.sendError(err.status, err.error);
 			return;

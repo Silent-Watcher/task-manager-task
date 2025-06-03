@@ -25,12 +25,8 @@ const zEnv = z.object({
 
 	APP_HOST: z.string().nonempty('APP_HOST must be set'),
 
-	MONGO_USERNAME: z
-		.string()
-		.nonempty({ message: 'MONGO_USERNAME is required' }),
-	MONGO_PASSWORD: z
-		.string()
-		.nonempty({ message: 'MONGO_USERNAME is required' }),
+	MONGO_USERNAME: z.string().optional(),
+	MONGO_PASSWORD: z.string().optional(),
 	MONGO_HOST: z.string().nonempty({ message: 'MONGO_HOST is required' }),
 	MONGO_PORT: z.coerce
 		.number()
