@@ -1,5 +1,37 @@
 # task-manager
 
+## ⚠️ environment variables note
+
+Inside the `.docker` directory, create a folder named `env`, and within it, add a file called `.env.dev`. Copy all the environment variables from the `.env.example` file located in the project root into `.env.dev`.
+
+
+## Environment Variables
+
+To run this project, you will need to add the following environment variables to your .env.dev file
+
+`NODE_ENV`= development
+
+`APP_ENV`= development
+`APP_PORT`= 3000
+`APP_HOST`= localhost
+
+`MONGO_USERNAME`= 
+`MONGO_PASSWORD`= 
+`MONGO_DATABASE`= test
+`MONGO_REPLICASET`= rs0
+`MONGO_HOST`= 127.0.0.1
+`MONGO_PORT`= 27017
+
+
+`LOG_LEVEL`= debug
+
+`ACCESS_TOKEN_SECRET`= 
+`REFRESH_TOKEN_SECRET`= 
+
+`COOKIE_SECRET`= 
+
+`CLIENT_BASE_URL`= http://localhost:3000
+
 ## ⚠️ MongoDB Replica Set Note 🥲
 
 First spin up containers with:
