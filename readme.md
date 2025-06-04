@@ -1,5 +1,9 @@
 # task-manager
 
+## ⚠️ environment variables note
+
+Inside the `.docker` directory, create a folder named `env`, and within it, add a file called `.env.dev`. Copy all the environment variables from the `.env.example` file located in the project root into `.env.dev`.
+
 ## ⚠️ MongoDB Replica Set Note 🥲
 
 First spin up containers with:
