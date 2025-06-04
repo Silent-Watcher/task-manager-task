@@ -1,4 +1,3 @@
-import { compare, hash } from 'bcrypt';
 import dayjs from 'dayjs';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
@@ -49,9 +48,7 @@ const createAuthService = (refreshTokenRepo: IRefreshTokenRepository) => ({
 				message: 'email is already in use',
 			});
 		}
-		console.log('inside service');
 		const hashedPassword = hashPassword(password);
-		console.log('after hash!');
 
 		const session = await mongoose.startSession();
 		try {
@@ -93,7 +90,6 @@ const createAuthService = (refreshTokenRepo: IRefreshTokenRepository) => ({
 				refreshToken,
 			};
 		} catch (error) {
-			console.log('error: ', error);
 			await session.abortTransaction();
 			logger.error(
 				`Transaction aborted due to: ${(error as Error)?.message}`,
