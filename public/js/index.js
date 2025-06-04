@@ -19,11 +19,14 @@ function renderAuthLinks() {
 
 	document.querySelector('table').classList.add('hidden')
 	document.querySelector('.addTaskCto').classList.add('hidden')
+	document.querySelector('.logout button').classList.add('hidden')
 }
 
 function renderTasks(tasks) {
 	document.querySelector('table').classList.remove('hidden')
 	document.querySelector('.addTaskCto').classList.remove('hidden')
+	document.querySelector('.logout button').classList.remove('hidden')
+
 	document.querySelector('.user-email').textContent = tasks[0].user.email
 	document.querySelector('.auth-links').innerHTML = null;
 
@@ -102,3 +105,9 @@ window.addEventListener('DOMContentLoaded', async () => {
 		renderTasks(tasks);
 	}
 });
+
+
+document.querySelector('.logout button').addEventListener('click', ()=>{
+	localStorage.clear();
+	window.location.href = '/'
+})

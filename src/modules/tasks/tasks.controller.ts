@@ -12,8 +12,6 @@ import { taskService } from './tasks.service';
 const createTaskController = (service: ITaskService) => ({
 	async getAll(req: Request, res: Response, next: NextFunction) {
 		try {
-			console.log(req.user?.password);
-
 			const { page, pageSize, sort, search } =
 				req.query as TasksQuerySchema;
 

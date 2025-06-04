@@ -23,9 +23,7 @@ export const rawMongo: () => Promise<Mongoose> = (() => {
 		if (!connectionPromise) {
 			let attempts = 0;
 
-			// const uri = `mongodb://${CONFIG.DB.HOST}:${CONFIG.DB.PORT}/${CONFIG.DB.DB_NAME}?replicaSet=rs0`;
-			const uri = 'mongodb://mongo:27017/test?replicaSet=rs0';
-			console.log('uri: ', uri);
+			const uri = `mongodb://${CONFIG.DB.HOST}:${CONFIG.DB.PORT}/${CONFIG.DB.DB_NAME}?replicaSet=rs0`;
 			const options: ConnectOptions = {
 				serverSelectionTimeoutMS: 2000,
 				...(CONFIG.DEBUG
@@ -43,10 +41,9 @@ export const rawMongo: () => Promise<Mongoose> = (() => {
 				try {
 					attempts++;
 					logger.info(`🔄 MongoDB connection attempt #${attempts}`);
-					const conn = await mongoose.connect(uri);
+					const conn = await mongoose.connect(uri, options);
 					return conn;
 				} catch (error) {
-					console.log('error: ', error);
 					if (attempts < MAX_RETRIES) {
 						const backoff = attempts * 100;
 						logger.warn(`⏱ Retrying in ${backoff}ms…`);
