@@ -10,7 +10,7 @@ services:
       context: ..
       dockerfile: .docker/Dockerfile.dev
     ports:
-      - "4000:4000"
+      - "3000:3000"
     restart: always
     volumes:
       - ..:/usr/src/app

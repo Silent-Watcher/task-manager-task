@@ -18,7 +18,15 @@ h3{
 .user-email{
 	color: royalblue;
 }
-
+.logout{
+	margin: 1rem 0;
+	text-align: center;
+	display: flex;
+	justify-content: center;
+}
+.logout button {
+	cursor: pointer;
+}
 
 p.addTaskCto{
 	text-align: center;

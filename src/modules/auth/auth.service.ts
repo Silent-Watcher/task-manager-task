@@ -57,7 +57,7 @@ const createAuthService = (refreshTokenRepo: IRefreshTokenRepository) => ({
 			const newUser = await userService.create(
 				{
 					email,
-					password: password,
+					password: hashedPassword,
 				},
 				session,
 			);
